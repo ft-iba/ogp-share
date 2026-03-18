@@ -1,17 +1,95 @@
 ---
-
+// import type { GetStaticPaths } from 'astro';
+import Layout from '../layouts/Layout.astro';
+const layoutProps = {
+  ogImage: '1200x630-lp.png',
+  ogType: 'website',
+}
 ---
 
-<html lang="en">
-	<head>
-		<meta charset="utf-8" />
-		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-		<link rel="icon" href="/favicon.ico" />
-		<meta name="viewport" content="width=device-width" />
-		<meta name="generator" content={Astro.generator} />
-		<title>Astro</title>
-	</head>
-	<body>
-		<h1>Astro</h1>
-	</body>
-</html>
+<Layout {...layoutProps}>
+  <p>LP</p>
+  <div class="share">
+    <ul class="share__list">
+      {Array.from({ length: 3 }, (_, i) => (
+        <li class="share__item">
+          <button
+            class="share__button"
+            data-js="shareX"
+            data-index={i}
+            type="button"
+          >share-{i + 1}</button>
+        </li>
+      ))}
+    </ul>
+  </div>
+</Layout>
+
+<script>
+import { SITE } from '@constants/index';
+import { onShareX } from '@constants/util';
+
+const shareList = [
+  {
+    slug: '1',
+    text: 'shareText1',
+    hash: 'hash1',
+  },
+  {
+    slug: '2',
+    text: 'shareText2',
+    hash: 'hash2',
+  },
+  {
+    slug: '3',
+    text: 'shareText3',
+    hash: 'hash3_1,hash3_2',
+  },
+];
+
+const initShareX = () => {
+  const list: HTMLButtonElement[] = Array.from(document.querySelectorAll('button[data-js="shareX"]')).filter((item): item is HTMLButtonElement => item instanceof HTMLButtonElement);
+
+  list.forEach((item) => {
+    item.addEventListener('click', async() => {
+      const index = Number(item.dataset.index);
+      const payload = {
+        url: `${SITE.DOMAIN}/${SITE.BASE}/share/${shareList[index].slug}/`,
+        text: shareList[index].text,
+        hashtags: shareList[index].hash
+      };
+      onShareX(payload);
+    });
+  });
+}
+
+document.addEventListener('DOMContentLoaded', (): void => {
+  console.log('init');
+  initShareX();
+});
+</script>
+
+<style>
+.share__list {
+  display: grid;
+  gap: 0.4em;
+  margin: 0;
+  padding: 0;
+}
+
+.share__item {
+  list-style: none;
+}
+
+.share__button {
+  background-color: #fff;
+  border: 1px solid #aaa;
+  border-radius: 4px;
+  cursor: pointer;
+  font-family: monospace;
+  font-size: 0.8em;
+  letter-spacing: 0.1em;
+  padding: 0.4em 1.2em;
+  text-transform: uppercase;
+}
+</style>

@@ -1,0 +1,32 @@
+---
+// import { getCollection, render } from 'astro:content';
+import { getCollection } from 'astro:content';
+import Layout from '../../layouts/Layout.astro';
+export async function getStaticPaths() {
+  const shareList = await getCollection('share');
+  return shareList.map(share => ({
+    params: { id: share.id },
+    props: { share },
+  }));
+}
+const { share } = Astro.props;
+// const { Content } = await render(post);
+
+const layoutProps = {
+  ogImage: share.data.ogImage,
+  title: share.data.title,
+  description: share.data.description,
+}
+---
+<Layout {...layoutProps}>
+  <Fragment slot="head">
+    <meta name="robots" content="noindex,follow">
+  </Fragment>
+</Layout>
+
+<script>
+import { SITE } from '@constants/index';
+setTimeout(() => {
+  location.replace(`/${SITE.BASE}/`);
+}, 80);
+</script>

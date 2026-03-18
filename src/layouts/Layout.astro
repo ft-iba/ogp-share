@@ -1,0 +1,57 @@
+---
+import {
+  COMMIT_HASH,
+  META_COMMON,
+  SITE
+} from '@constants/index';
+
+const {
+  title = META_COMMON.title,
+  description = META_COMMON.description,
+  ogType = 'article',
+  ogImage,
+  ogSiteName = 'og site name',
+  twitterCard = META_COMMON.twitter?.card,
+} = Astro.props
+
+const canonicalURL = new URL(Astro.url.pathname, `${ SITE.DOMAIN }/${ SITE.BASE }`).toString();
+const ogImagePath = `${ SITE.DOMAIN }/${ SITE.BASE }/${ogImage}?v=${COMMIT_HASH}`;
+// const isHome = Astro.url.pathname === `${ SITE.BASE }/`;
+---
+<!doctype html>
+<html lang="ja">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <meta name="format-detection" content="telephone=no,address=no,email=no">
+    <title>{ title }</title>
+    <meta content={ description } name="description">
+    <link rel="canonical" href={ canonicalURL } />
+
+    <meta property="og:type" content={ ogType }>
+    <meta property="og:url" content={ canonicalURL }>
+    <meta property="og:image" content={ ogImagePath }>
+    <meta property="og:title" content={ title }>
+    <meta property="og:description" content={ description }>
+    <meta property="og:site_name" content={ ogSiteName } />
+
+    <meta content={ twitterCard } property="twitter:card" />
+    <meta content={ title } property="twitter:title" />
+    <meta content={ description } property="twitter:description" />
+    <slot name="head" />
+  </head>
+  <body>
+    <slot />
+  </body>
+</html>
+
+<style>
+body {
+  background-color: #eee;
+  display: grid;
+  place-content: center;
+  font-family: monospace;
+  height: 100dvh;
+  margin: 0;
+}
+</style>
